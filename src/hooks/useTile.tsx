@@ -7,5 +7,6 @@ export const useTile = () => {
   if (!context) {
     throw new Error("useTile must be used within a TileProvider");
   }
+
   return context;
 };

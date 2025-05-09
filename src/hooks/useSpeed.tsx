@@ -7,5 +7,6 @@ export const useSpeed = () => {
   if (!context) {
     throw new Error("useSpeed must be used within a SpeedProvider");
   }
+
   return context;
 };

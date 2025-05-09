@@ -7,19 +7,18 @@ import { Nav } from "./components/Nav";
 
 function App() {
   const isVisualizationRunningRef = useRef(false);
+
   return (
-    <>
-      <PathfindingProvider>
-        <TileProvider>
-          <SpeedProvider>
-            <div className="h-screen w-screen flex flex-col">
-              <Nav isVisualizationRunningRef={isVisualizationRunningRef} />
-              <Grid isVisualizationRunningRef={isVisualizationRunningRef} />
-            </div>
-          </SpeedProvider>
-        </TileProvider>
-      </PathfindingProvider>
-    </>
+    <PathfindingProvider>
+      <TileProvider>
+        <SpeedProvider>
+          <div className="h-screen w-screen flex flex-col bg-[#131416]">
+            <Nav isVisualizationRunningRef={isVisualizationRunningRef} />
+            <Grid isVisualizationRunningRef={isVisualizationRunningRef} />
+          </div>
+        </SpeedProvider>
+      </TileProvider>
+    </PathfindingProvider>
   );
 }
 
