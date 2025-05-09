@@ -1,9 +1,46 @@
 import { twMerge } from "tailwind-merge";
 import { usePathfinding } from "../hooks/usePathfinding";
-import { MAX_ROWS, MAX_COLS } from "../utils/constants";
+import { MAX_COLS, MAX_ROWS } from "../utils/constants";
+import { Tile } from "./Tile";
+import { MutableRefObject, useState } from "react";
+import { checkIfStartOrEnd, createNewGrid } from "../utils/helpers";
 
-export function Grid() {
-  const { grid } = usePathfinding();
+export function Grid({
+  isVisualizationRunningRef,
+}: {
+  isVisualizationRunningRef: MutableRefObject<boolean>;
+}) {
+  const { grid, setGrid } = usePathfinding();
+  const [isMouseDown, setIsMouseDown] = useState(false);
+
+  const handleMouseDown = (row: number, col: number) => {
+    if (isVisualizationRunningRef.current || checkIfStartOrEnd(row, col)) {
+      return;
+    }
+
+    setIsMouseDown(true);
+    const newGrid = createNewGrid(grid, row, col);
+    setGrid(newGrid);
+  };
+
+  const handleMouseUp = (row: number, col: number) => {
+    if (isVisualizationRunningRef.current || checkIfStartOrEnd(row, col)) {
+      return;
+    }
+
+    setIsMouseDown(false);
+  };
+
+  const handleMouseEnter = (row: number, col: number) => {
+    if (isVisualizationRunningRef.current || checkIfStartOrEnd(row, col)) {
+      return;
+    }
+
+    if (isMouseDown) {
+      const newGrid = createNewGrid(grid, row, col);
+      setGrid(newGrid);
+    }
+  };
 
   return (
     <div
@@ -20,11 +57,27 @@ export function Grid() {
         }px] w-[${MAX_COLS * 7}px]`
       )}
     >
-      {grid.map((row, rowIndex) => (
+      {grid.map((r, rowIndex) => (
         <div key={rowIndex} className="flex">
-          {row.map((tile, tileIndex) => (
-            <div className="bg-white h-2 w-2 border" />
-          ))}
+          {r.map((tile, tileIndex) => {
+            const { row, col, isEnd, isStart, isPath, isTraversed, isWall } =
+              tile;
+            return (
+              <Tile
+                key={tileIndex}
+                row={tile.row}
+                col={tile.col}
+                isEnd={isEnd}
+                isStart={isStart}
+                isPath={isPath}
+                isTraversed={isTraversed}
+                isWall={isWall}
+                handleMouseDown={() => handleMouseDown(row, col)}
+                handleMouseUp={() => handleMouseUp(row, col)}
+                handleMouseEnter={() => handleMouseEnter(row, col)}
+              />
+            );
+          })}
         </div>
       ))}
     </div>
